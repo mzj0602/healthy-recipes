@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageShell } from '@/components/layout/page-shell';
 import { mockRecipes } from '@/features/recipes/data/mockRecipes';
 import { HomePage } from '@/features/meal-planner/components/home-page';
@@ -8,13 +8,28 @@ import { HealthPlanPage } from '@/features/health-plan/components/health-plan-pa
 import { SiteChrome } from '@/features/meal-planner/components/site-chrome';
 import { SiteFooterBlock } from '@/features/meal-planner/components/site-footer-block';
 import type { PlannerPageId } from '@/features/meal-planner/types';
+import type { Recipe } from '@/shared/types/recipe';
+import { trpc } from '@/lib/trpc';
 
 export function HealthyMealPlannerApp() {
   const [activePage, setActivePage] = useState<PlannerPageId>('home');
+  const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);
   const [selectedRecipeId, setSelectedRecipeId] = useState(mockRecipes[0]?.id ?? '');
 
+  useEffect(() => {
+    trpc.recipe.list.query()
+      .then((data) => {
+        setRecipes(data);
+        if (data[0] && !selectedRecipeId) setSelectedRecipeId(data[0].id);
+      })
+      .catch(() => {
+        // Worker unavailable, keep using mockRecipes
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const selectedRecipe =
-    mockRecipes.find((recipe) => recipe.id === selectedRecipeId) ?? mockRecipes[0] ?? null;
+    recipes.find((recipe) => recipe.id === selectedRecipeId) ?? recipes[0] ?? null;
 
   return (
     <PageShell className="flex flex-col">
@@ -25,7 +40,7 @@ export function HealthyMealPlannerApp() {
           <HomePage
             onBrowseRecipes={() => setActivePage('recipes')}
             onOpenPlan={() => setActivePage('plan')}
-            recipes={mockRecipes}
+            recipes={recipes}
           />
         ) : null}
 
@@ -36,7 +51,7 @@ export function HealthyMealPlannerApp() {
               setSelectedRecipeId(recipeId);
               setActivePage('detail');
             }}
-            recipes={mockRecipes}
+            recipes={recipes}
           />
         ) : null}
 
