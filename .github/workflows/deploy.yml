@@ -126,6 +126,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          VITE_WORKER_URL: https://healthy-recipes-api.mazj0602.workers.dev
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
