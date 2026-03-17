@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { Recipe } from '@/shared/types/recipe';
 import { recipeMedia } from '@/features/meal-planner/data/recipe-media';
+import { AiSuggestPanel } from '@/features/recipes/components/AiSuggestPanel';
 
 interface RecipeExplorePageProps {
   recipes: Recipe[];
@@ -8,7 +9,7 @@ interface RecipeExplorePageProps {
   onOpenPlan: () => void;
 }
 
-export function RecipeExplorePage({ recipes, onSelectRecipe }: RecipeExplorePageProps) {
+export function RecipeExplorePage({ recipes, onSelectRecipe, onAddAiRecipe }: RecipeExplorePageProps & { onAddAiRecipe?: (recipe: Recipe) => void }) {
   const [query, setQuery] = useState('');
 
   const filteredRecipes = useMemo(() => {
@@ -137,6 +138,10 @@ export function RecipeExplorePage({ recipes, onSelectRecipe }: RecipeExplorePage
           </div>
 
           {/* Pagination */}
+          <div className="mt-8">
+            <AiSuggestPanel onAdd={(recipe) => onAddAiRecipe?.(recipe)} />
+          </div>
+
           <div className="mt-12 flex justify-center items-center gap-2">
             {['1', '2', '3'].map((p) => (
               <button

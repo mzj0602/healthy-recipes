@@ -1,7 +1,9 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { appRouter } from './router';
 
-interface Env {}
+interface Env {
+  DEEPSEEK_API_KEY: string;
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -10,7 +12,7 @@ const CORS_HEADERS = {
 };
 
 export default {
-  async fetch(request: Request, _env: Env, _ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: CORS_HEADERS });
     }
@@ -22,7 +24,7 @@ export default {
         endpoint: '/trpc',
         req: request,
         router: appRouter,
-        createContext: () => ({}),
+        createContext: () => ({ apiKey: env.DEEPSEEK_API_KEY }),
       });
 
       const newHeaders = new Headers(response.headers);

@@ -1,7 +1,11 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-const t = initTRPC.create();
+export interface Context {
+  apiKey: string;
+}
+
+const t = initTRPC.context<Context>().create();
 
 export type NutritionFocus = 'high-protein' | 'low-carb' | 'gut-friendly' | 'balanced';
 
@@ -74,6 +78,23 @@ const recipes: Recipe[] = [
   },
 ];
 
+const SYSTEM_PROMPT = `你是一位专业营养师，根据用户需求生成一道健康食谱。
+必须返回严格的 JSON 对象，字段如下：
+{
+  "id": "kebab-case的唯一ID",
+  "name": "菜谱名称（中文）",
+  "description": "一句话描述（中文，30字以内）",
+  "cookTime": 烹饪分钟数（数字）,
+  "calories": 热量kcal（数字）,
+  "protein": 蛋白质克数（数字）,
+  "focus": "high-protein" | "low-carb" | "gut-friendly" | "balanced",
+  "difficulty": "easy" | "medium",
+  "tags": ["标签1", "标签2", "标签3"],
+  "ingredients": ["食材1", "食材2"],
+  "steps": ["步骤1", "步骤2", "步骤3"]
+}
+只返回 JSON，不要有任何其他文字。`;
+
 export const appRouter = t.router({
   recipe: t.router({
     list: t.procedure
@@ -94,6 +115,41 @@ export const appRouter = t.router({
     getById: t.procedure.input(z.string()).query(({ input }) => {
       return recipes.find((r) => r.id === input) ?? null;
     }),
+
+    suggest: t.procedure
+      .input(z.object({ prompt: z.string().min(1).max(200) }))
+      .mutation(async ({ input, ctx }) => {
+        const response = await fetch('https://api.deepseek.com/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${ctx.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            response_format: { type: 'json_object' },
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              { role: 'user', content: input.prompt },
+            ],
+          }),
+        });
+
+        if (!response.ok) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'DeepSeek API 请求失败' });
+        }
+
+        const data = await response.json() as {
+          choices: Array<{ message: { content: string } }>;
+        };
+
+        const content = data.choices[0]?.message?.content;
+        if (!content) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '未收到 AI 响应' });
+        }
+
+        return JSON.parse(content) as Recipe;
+      }),
   }),
 });
 

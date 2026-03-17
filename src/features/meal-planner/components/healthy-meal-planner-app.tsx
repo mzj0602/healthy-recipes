@@ -46,6 +46,7 @@ export function HealthyMealPlannerApp() {
 
         {activePage === 'recipes' ? (
           <RecipeExplorePage
+            onAddAiRecipe={(recipe) => setRecipes((prev) => [...prev, recipe])}
             onOpenPlan={() => setActivePage('plan')}
             onSelectRecipe={(recipeId) => {
               setSelectedRecipeId(recipeId);
