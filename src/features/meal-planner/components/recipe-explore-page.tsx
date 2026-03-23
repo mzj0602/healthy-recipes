@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useAtom } from 'jotai';
 import type { Recipe } from '@/shared/types/recipe';
 import { recipeMedia } from '@/features/meal-planner/data/recipe-media';
 import { AiSuggestPanel } from '@/features/recipes/components/AiSuggestPanel';
+import { searchAtom } from '@/features/recipes/store/recipeAtoms';
 
 interface RecipeExplorePageProps {
   recipes: Recipe[];
@@ -10,7 +12,7 @@ interface RecipeExplorePageProps {
 }
 
 export function RecipeExplorePage({ recipes, onSelectRecipe, onAddAiRecipe }: RecipeExplorePageProps & { onAddAiRecipe?: (recipe: Recipe) => void }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useAtom(searchAtom);
 
   const filteredRecipes = useMemo(() => {
     const normalized = query.trim().toLowerCase();

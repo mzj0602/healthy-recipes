@@ -1,9 +1,76 @@
+import { useState, useEffect, useRef } from 'react';
+import { useSetAtom } from 'jotai';
 import { cn } from '@/lib/utils';
 import type { PlannerPageId } from '@/features/meal-planner/types';
+import { searchAtom } from '@/features/recipes/store/recipeAtoms';
 
 interface SiteChromeProps {
   activePage: PlannerPageId;
   onNavigate: (page: PlannerPageId) => void;
+}
+
+interface HeaderSearchProps {
+  activePage: PlannerPageId;
+  onNavigate: (page: PlannerPageId) => void;
+}
+
+function HeaderSearch({ activePage, onNavigate }: HeaderSearchProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [localValue, setLocalValue] = useState('');
+  const setSearch = useSetAtom(searchAtom);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isExpanded) inputRef.current?.focus();
+  }, [isExpanded]);
+
+  function handleBlur() {
+    setTimeout(() => { setIsExpanded(false); setLocalValue(''); }, 150);
+  }
+
+  function handleSubmit() {
+    const trimmed = localValue.trim();
+    if (!trimmed) return;
+    setSearch(trimmed);
+    if (activePage !== 'recipes') onNavigate('recipes');
+    setIsExpanded(false);
+    setLocalValue('');
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') handleSubmit();
+    if (e.key === 'Escape') { setIsExpanded(false); setLocalValue(''); }
+  }
+
+  return (
+    <div className="relative flex items-center">
+      <div className={cn(
+        'overflow-hidden transition-all duration-200',
+        isExpanded ? 'w-[220px] opacity-100' : 'w-0 opacity-0',
+      )}>
+        <input
+          ref={inputRef}
+          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-[8px] focus:ring-2 focus:ring-[#ec7f13] focus:border-[#ec7f13] outline-none text-sm"
+          onBlur={handleBlur}
+          onChange={(e) => setLocalValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="搜索菜谱..."
+          type="text"
+          value={localValue}
+        />
+      </div>
+      <button
+        aria-label="搜索"
+        className="p-2 text-gray-600 hover:text-[#ec7f13] transition-colors"
+        onClick={() => setIsExpanded(true)}
+        type="button"
+      >
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+        </svg>
+      </button>
+    </div>
+  );
 }
 
 const navItems: Array<{ id: PlannerPageId; label: string }> = [
@@ -43,14 +110,7 @@ export function SiteChrome({ activePage, onNavigate }: SiteChromeProps) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <button
-            className="p-2 text-gray-600 hover:text-[#ec7f13] transition-colors"
-            type="button"
-          >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-            </svg>
-          </button>
+          <HeaderSearch activePage={activePage} onNavigate={onNavigate} />
           <button
             className="flex items-center gap-2 px-4 py-2 bg-[#ec7f13] hover:bg-[#c7670b] text-white font-semibold rounded-[8px] transition-all"
             onClick={() => onNavigate('plan')}
