@@ -8,17 +8,28 @@ import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import path from 'path'
 
-// 优先读项目 .env，读不到再读 ~/.claude/.env 作兜底
-const envCandidates = [
-  path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env'),
-  ...(process.env.HOME ? [path.join(process.env.HOME, '.claude', '.env')] : []),
-]
-for (const envPath of envCandidates) {
+// 优先读项目 .env；fallback 只补充项目 .env 中未出现的 key（含空值 key 也视为已定义）
+const projectEnvPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env')
+const globalEnvPath = process.env.HOME ? path.join(process.env.HOME, '.claude', '.env') : null
+
+const projectKeys = new Set()
+try {
+  readFileSync(projectEnvPath, 'utf-8').split('\n').forEach(line => {
+    const [key, ...vals] = line.split('=')
+    const k = key?.trim()
+    if (!k || !vals.length) return
+    projectKeys.add(k)
+    if (!process.env[k]) process.env[k] = vals.join('=').trim()
+  })
+} catch {}
+
+if (globalEnvPath) {
   try {
-    readFileSync(envPath, 'utf-8').split('\n').forEach(line => {
+    readFileSync(globalEnvPath, 'utf-8').split('\n').forEach(line => {
       const [key, ...vals] = line.split('=')
-      if (key?.trim() && vals.length && !process.env[key.trim()])
-        process.env[key.trim()] = vals.join('=').trim()
+      const k = key?.trim()
+      if (!k || !vals.length || projectKeys.has(k) || process.env[k]) return
+      process.env[k] = vals.join('=').trim()
     })
   } catch {}
 }

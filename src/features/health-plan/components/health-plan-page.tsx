@@ -28,6 +28,7 @@ function isValidDayPlan(d: unknown): d is DayPlan {
     typeof day.id === 'string' &&
     typeof day.day === 'string' &&
     Array.isArray(day.meals) &&
+    (day.meals as unknown[]).length > 0 &&
     (day.meals as unknown[]).every(isValidMeal) &&
     VALID_ACCENTS.has(day.accent as string)
   );
@@ -45,6 +46,21 @@ function isValidGoal(g: unknown): g is NutrientGoal {
   );
 }
 
+/** Sanitize numeric values that may have been saved by older builds. */
+function sanitizePlan(plan: DayPlan[]): DayPlan[] {
+  return plan.map((day) => ({
+    ...day,
+    meals: day.meals.map((m) => ({ ...m, calories: Math.max(0, Math.round(m.calories)) })),
+  }));
+}
+
+function sanitizeGoals(goals: NutrientGoal[]): NutrientGoal[] {
+  return goals.map((g) => ({
+    ...g,
+    percent: Math.max(0, Math.min(100, Math.round(g.percent))),
+  }));
+}
+
 function loadFromStorage(): { plan: DayPlan[]; goals: NutrientGoal[] } {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -55,12 +71,14 @@ function loadFromStorage(): { plan: DayPlan[]; goals: NutrientGoal[] } {
     if (
       !Array.isArray(plan) ||
       !Array.isArray(goals) ||
+      plan.length !== defaultPlan.length ||
+      goals.length === 0 ||
       !(plan as unknown[]).every(isValidDayPlan) ||
       !(goals as unknown[]).every(isValidGoal)
     ) {
       throw new Error('invalid');
     }
-    return { plan, goals };
+    return { plan: sanitizePlan(plan), goals: sanitizeGoals(goals) };
   } catch {
     return { plan: defaultPlan, goals: defaultGoals };
   }
