@@ -1,64 +1,81 @@
-你是 FreshPlate 项目的代码 Review 专家，负责对本次开发的代码进行多轮审查。
+你是 FreshPlate 项目的 Review 协调者，负责调度 Codex 对代码进行审查，并根据反馈修改代码。
 
 参数：$ARGUMENTS
 格式：`<feature-name>`
 
+## Generator-Critic 模式
+
+- **Generator**：Claude Code（P4 写代码）
+- **Critic**：Codex CLI（独立审查，最多 3 轮）
+
 ## 执行步骤
 
-### 第一步：收集变更范围
-读取 `specs/{feature-name}/` 下最新的 `tasks.md`，获取所有已完成（`[x]`）任务涉及的文件列表。
+### 第一步：读取变更上下文
 
-读取这些文件的内容进行 Review。
+读取 `specs/{feature-name}/` 下最新的 `tasks.md`，获取所有 `[x]` 任务涉及的文件范围。
+读取 `.claude/SECURITY.md` 了解安全必检项。
 
-同时读取：
-- `.claude/SECURITY.md` — 安全必检项
-- `.claude/CODING_GUIDELINES.md` — 编码规范
+### 第二步：初始化 Review 日志
 
-### 第二步：执行 Review（最多 3 轮）
-
-**Review 维度**：
-
-#### 安全检查（必检）
-- [ ] 前端代码中无硬编码 API Key 或 secret
-- [ ] Worker CORS 配置合理（当前为 `*`，需标注风险）
-- [ ] 新增 tRPC procedure 有 Zod 输入验证
-- [ ] `wrangler.toml` 无敏感信息
-- [ ] DeepSeek prompt 无注入风险
-
-#### 代码质量检查
-- [ ] 无 `any` 类型
-- [ ] 导入使用 `@/` 别名
-- [ ] 无未使用的变量/导入
-- [ ] 组件职责单一，无超过 150 行的大组件
-- [ ] Jotai atom 命名规范（以 `Atom` 结尾）
-- [ ] tRPC procedure 命名规范（camelCase）
-
-#### 功能完整性检查
-- [ ] 对照 `design.md`，所有设计点均已实现
-- [ ] 对照 `tasks.md`，所有 `[x]` 任务代码已实际存在
-- [ ] 类型定义完整，无 `TODO` 或 `FIXME` 遗留
-
-### 第三步：输出 Review 结果
+在 `specs/{feature-name}/` 下创建 `review-log.md`：
 
 ```markdown
-## Review Round {N} 结果
-
-### ✅ 通过项
-（列出没有问题的检查项）
-
-### ❌ 问题项
-（每个问题：文件路径:行号 → 问题描述 → 修改建议）
-
-### 结论
-- 通过 / 需要修改（列出修改清单）
+# Review Log — {feature-name} — {YYYY-MM-DD}
 ```
 
-### 第四步：循环逻辑
+### 第三步：调用 Codex 执行 Review
 
-- 如果发现问题 → 列出修改清单，触发 P4 Fix 修改 → 再次 Review
-- 最多执行 3 轮
-- 第 3 轮仍有严重问题（安全类）→ 停止并告警，需人工介入
-- 第 3 轮仍有轻微问题（代码风格类）→ 可标注风险后通过
+运行以下命令：
 
-### 第五步：通过后
-输出："✅ Code Review 通过（共 {N} 轮），可进入测试阶段"
+```bash
+codex review --uncommitted
+```
+
+将 Codex 完整输出追加到 `review-log.md`：
+
+```markdown
+## Round {N}
+
+### Codex 输出
+{Codex 的完整输出内容}
+```
+
+### 第四步：解析 Codex 输出
+
+- 输出包含 **LGTM** → 在日志追加"无问题"，跳到第六步
+- 包含问题列表 → 逐条修复：
+  1. 输出："🔧 修复：{问题描述}"
+  2. 修改对应文件
+  3. 运行 `tsc --noEmit` 确认类型无误
+
+修复完成后将本轮修复内容追加到 `review-log.md`：
+
+```markdown
+### Claude 修复
+- ✅ {修复内容1}
+- ✅ {修复内容2}
+```
+
+### 第五步：循环验证（最多 3 轮）
+
+修复完成后回到第三步，再次调用 `codex review --uncommitted` 验证。
+
+- Codex 输出 LGTM → 通过，退出循环
+- 仍有问题且轮次 < 3 → 继续修复
+- 第 3 轮仍有**安全类问题** → 停止，输出告警，需人工介入
+- 第 3 轮仅剩**代码风格问题** → 标注风险后通过
+
+### 第六步：通过后
+
+将最终结论追加到 `review-log.md`：
+
+```markdown
+## 结论
+- 共执行：{N} 轮
+- Codex 发现问题：{N} 个
+- 已修复：{N} 个
+- 遗留风险：{描述 或 无}
+✅ Review 通过
+```
+
+输出："✅ Code Review 通过（共 {N} 轮），日志：specs/{feature-name}/review-log.md"

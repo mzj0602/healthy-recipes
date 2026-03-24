@@ -83,3 +83,34 @@ const res = await fetch('https://healthy-recipes-api.mazj0602.workers.dev/trpc/.
 - 新增 procedure 必须写在 `worker/src/router.ts`
 - 输入用 Zod 验证，输出类型明确定义
 - AI prompt 模板单独提取为常量，不内联在 procedure 里
+
+## localStorage 使用规范
+
+凡需要 `localStorage` 持久化的功能，必须遵循以下模式：
+
+```typescript
+// ✅ 读取：带结构校验 + 容错回退
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem('your-key')
+    if (!raw) throw new Error('empty')
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed.items)) throw new Error('invalid')
+    return parsed
+  } catch {
+    return defaultData  // 回退默认数据
+  }
+}
+
+// ✅ 写入：带 try/catch（兼容 Safari 隐私模式）
+function saveToStorage(data) {
+  try {
+    localStorage.setItem('your-key', JSON.stringify(data))
+  } catch {
+    // 存储不可用，仅内存更新
+  }
+}
+```
+
+- `localStorage` 草稿状态用局部 `useState` 管理，不放 Jotai atom（不需要跨组件共享）
+- 弹窗编辑采用"深拷贝草稿"模式：props → deep copy → draft state → 保存时写回父组件

@@ -60,3 +60,26 @@ Cloudflare Worker（后端）
 2. 如需新 API，在 `worker/src/router.ts` 添加 procedure
 3. 前端通过 `src/lib/trpc.ts` 调用，不直接 fetch
 4. 状态变化用 Jotai atom，不用 useState 跨组件传递
+
+## 本地持久化数据流（localStorage）
+
+部分功能无需后端，直接读写 `localStorage`：
+
+```
+用户操作 UI（编辑弹窗）
+  → 本地 useState 草稿更新
+  → 保存校验通过
+  → localStorage.setItem('health-plan-data', JSON.stringify({plan, goals}))
+  → 父组件 setState 更新
+  → UI 重新渲染
+  ↑
+页面加载时：localStorage.getItem → JSON.parse → 回退默认数据（格式不合法时）
+```
+
+**适用场景**：纯客户端个性化配置，不需要服务端同步的数据（如饮食计划编辑）。
+
+**现有 localStorage key**：
+
+| Key | 结构 | 用途 |
+|---|---|---|
+| `health-plan-data` | `{ plan: DayPlan[], goals: NutrientGoal[] }` | 用户自定义饮食计划与营养目标 |

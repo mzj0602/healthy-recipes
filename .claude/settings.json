@@ -1,4 +1,30 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(tsc *)",
+      "Bash(git *)",
+      "Bash(node scripts/*)",
+      "Bash(cd worker && *)",
+      "Bash(codex *)",
+      "Bash(node /Users/mzj/.claude/tg-bot.js)",
+      "Bash(pm2 list:*)",
+      "Bash(pnpm ui:build)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\(''''gateway'''',{}\\), indent=2\\)\\)\")",
+      "Bash(node -e \":*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''name:'''', d.get\\(''''name''''\\)\\); print\\(''''version:'''', d.get\\(''''version''''\\)\\); print\\(''''_resolved:'''', d.get\\(''''_resolved'''',''''''''\\)\\); print\\(''''_from:'''', d.get\\(''''_from'''',''''''''\\)\\)\")",
+      "Bash(npm list:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d[k] for k in [''''installPath'''',''''updateChannel''''] if k in d}, indent=2\\)\\)\")",
+      "Bash(openclaw --version)",
+      "Bash(openclaw update:*)",
+      "Bash(find /Users/mzj -maxdepth 6 -name index.html -path *openclaw*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d.get\\(k\\) for k in [''''repository'''',''''homepage'''',''''bugs'''',''''author'''',''''license'''']}, indent=2\\)\\)\")",
+      "Bash(npm view:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/mzj/.claude"
+    ]
+  },
   "hooks": {
     "Stop": [
       {
@@ -20,15 +46,6 @@
           }
         ]
       }
-    ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(pnpm *)",
-      "Bash(tsc *)",
-      "Bash(git *)",
-      "Bash(node scripts/*)",
-      "Bash(cd worker && *)"
     ]
   }
 }

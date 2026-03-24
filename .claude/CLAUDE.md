@@ -47,17 +47,26 @@ cd worker && pnpm exec wrangler dev    # 本地 Worker
 cd worker && pnpm exec wrangler deploy # 部署 Worker
 ```
 
-## Pipeline 使用
+## 自然语言触发 Pipeline
 
-```
-/p0-pipeline <feature-name> <需求描述 或 JIRA URL>
-```
+**当用户用中文描述一个需求或功能改动时，自动执行以下步骤，无需用户输入任何指令：**
 
-示例：
-```
-/p0-pipeline recipe-search 用户需要按食材搜索菜谱，支持多选过滤
-/p0-pipeline recipe-ai https://jira.company.com/browse/HR-123
-```
+1. 从描述中提取功能关键词，生成英文 feature-name（如"搜索功能" → `recipe-search`）
+2. 自动执行 `/p0-pipeline {feature-name} {原始描述}`
+
+例如用户输入：
+> 我想加一个收藏菜谱的功能，用户可以点击心形图标收藏，在个人中心查看
+
+Claude 自动识别为新需求，提取 feature-name 为 `recipe-favorite`，触发完整 Pipeline。
+
+**判断是否为新需求的标准：**
+- 描述中包含"想要"、"加一个"、"新增"、"实现"、"支持"、"改一下"、"修改"等关键词
+- 或描述的是一个具体功能点
+
+**不触发 Pipeline 的情况：**
+- 用户在问问题（"这个文件是干什么的？"）
+- 用户在查看文件或调试
+- 用户明确说"不用 Pipeline"
 
 ## 注意事项
 

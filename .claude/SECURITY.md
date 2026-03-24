@@ -44,3 +44,9 @@
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 账户 ID |
 | `TG_BOT_TOKEN` | Telegram Bot Token |
 | `TG_CHAT_ID` | Telegram Chat ID |
+
+## localStorage 安全规范
+
+- `localStorage` 读写必须包裹 `try/catch`，兼容 Safari 隐私模式（会抛 `SecurityError`）
+- `localStorage` 仅存储用户本地个性化数据，禁止存储 API Key、token 或任何敏感凭证
+- 读取 `localStorage` 数据后须验证结构（`Array.isArray` 等），格式不合法时回退默认值，防止脏数据导致崩溃
