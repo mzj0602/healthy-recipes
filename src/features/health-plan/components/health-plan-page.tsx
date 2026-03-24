@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NutritionGoalsCard } from '@/features/health-plan/components/nutrition-goals-card';
 import { WeekPlanBoard } from '@/features/health-plan/components/week-plan-board';
 import { EditPlanModal } from '@/features/health-plan/components/edit-plan-modal';
+import { ShoppingListModal } from '@/features/health-plan/components/shopping-list-modal';
 import { nutrientGoals as defaultGoals, weeklyPlan as defaultPlan } from '@/features/health-plan/data/weekly-plan';
 import type { DayPlan, NutrientGoal } from '@/features/health-plan/types';
 
@@ -92,6 +93,7 @@ export function HealthPlanPage({ embedded = false }: HealthPlanPageProps) {
   const [plan, setPlan] = useState<DayPlan[]>(() => loadFromStorage().plan);
   const [goals, setGoals] = useState<NutrientGoal[]>(() => loadFromStorage().goals);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
 
   function handleSave(newPlan: DayPlan[], newGoals: NutrientGoal[]) {
     try {
@@ -124,7 +126,10 @@ export function HealthPlanPage({ embedded = false }: HealthPlanPageProps) {
             </div>
             <div className="flex items-center gap-3">
               {editButton}
-              <button className="px-4 py-2 bg-[#ec7f13] text-white rounded-[8px] text-sm font-bold shadow-sm hover:bg-[#cc6a0a] transition-colors">
+              <button
+                onClick={() => setIsShoppingListOpen(true)}
+                className="px-4 py-2 bg-[#ec7f13] text-white rounded-[8px] text-sm font-bold shadow-sm hover:bg-[#cc6a0a] transition-colors"
+              >
                 生成购物清单
               </button>
             </div>
@@ -139,7 +144,10 @@ export function HealthPlanPage({ embedded = false }: HealthPlanPageProps) {
           </div>
           <div className="flex items-center gap-3">
             {editButton}
-            <button className="px-4 py-2 bg-[#ec7f13] text-white rounded-[8px] text-sm font-bold shadow-sm hover:bg-[#cc6a0a] transition-colors">
+            <button
+              onClick={() => setIsShoppingListOpen(true)}
+              className="px-4 py-2 bg-[#ec7f13] text-white rounded-[8px] text-sm font-bold shadow-sm hover:bg-[#cc6a0a] transition-colors"
+            >
               生成购物清单
             </button>
           </div>
@@ -166,6 +174,13 @@ export function HealthPlanPage({ embedded = false }: HealthPlanPageProps) {
           goals={goals}
           onSave={handleSave}
           onClose={() => setIsEditOpen(false)}
+        />
+      )}
+      {isShoppingListOpen && (
+        <ShoppingListModal
+          plan={plan}
+          onClose={() => setIsShoppingListOpen(false)}
+          onOpenEditPlan={() => setIsEditOpen(true)}
         />
       )}
     </div>

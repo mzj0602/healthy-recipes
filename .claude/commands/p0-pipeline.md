@@ -14,7 +14,12 @@
 ### 第二步：初始化
 1. 确认 `specs/{FEATURE_NAME}/` 目录存在，不存在则创建
 2. 记录当前日期（格式 YYYY-MM-DD）
-3. 告知用户："🚀 Pipeline 启动：{FEATURE_NAME}"
+3. 创建功能分支（如不在该分支上）：
+   ```bash
+   git checkout -b feature/{FEATURE_NAME}
+   ```
+   已在 `feature/{FEATURE_NAME}` 上则跳过；在 `main` 上有未提交变更则先 stash 再建分支。
+4. 告知用户："🚀 Pipeline 启动：{FEATURE_NAME}（分支：feature/{FEATURE_NAME}）"
 
 ### 第三步：依次执行各阶段
 
@@ -54,14 +59,14 @@
    执行：`/p7-docsync {FEATURE_NAME}`
    完成后提示：✅ P7 文档同步完成
 
+9. **P8 提交 & PR**
+   执行：`/p8-commit {FEATURE_NAME}`
+   完成后提示：✅ P8 提交完成（等待用户选择推送方式）
+
 ### 第四步：收尾
-1. 创建 Pull Request（如有 gh CLI 可用）
-2. 输出总结报告：
-   - 功能名称
-   - 完成的任务数量
-   - 测试结果摘要
-   - specs 文件路径
-3. 提示："🎉 Pipeline 完成：{FEATURE_NAME}"
+输出总结报告：
+- 功能名称、完成任务数、测试结果摘要、specs 路径
+- 提示："🎉 Pipeline 完成：{FEATURE_NAME}"
 
 ## 异常处理
 
