@@ -100,10 +100,11 @@ codex review --uncommitted
 
 输出："✅ Code Review 通过（共 {N} 轮），日志：specs/{feature-name}/review-log.md"
 
-### 输出完成摘要
+### TG 通知 + 输出摘要
 
-输出结构化摘要供 dispatcher 捕获并转发 TG：
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🔍 P5 Review 完成：{feature-name}
+Review {N} 轮，修复 {N} 个问题"
 ```
-P5_DONE: {feature-name}
-Review 轮数：{N}，修复问题：{N}
-```
+
+输出摘要：`P5_DONE: {feature-name}`

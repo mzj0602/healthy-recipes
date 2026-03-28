@@ -65,9 +65,9 @@ codex review --uncommitted
 
 1. 再次运行 `tsc --noEmit` 确认整体无类型错误
 2. 运行 `pnpm test` 确认单元测试全部通过
-3. 输出结构化摘要供 dispatcher 捕获并转发 TG：
+3. 发送 TG 通知：
+   ```bash
+   node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "⚙️ P4 开发完成：{feature-name}
+   完成任务：{已完成数}/{总数}，mini-review {N} 轮"
    ```
-   P4_DONE: {feature-name}
-   完成任务：{已完成数}/{总数}
-   mini-review 轮数：{N}
-   ```
+   输出摘要：`P4_DONE: {feature-name}`

@@ -57,11 +57,11 @@
   - 任务 > 8 或前后端都涉及 → "建议并行 Sub-agents（worktree 模式）"
 - 说明原因，供用户/P0 调度参考
 
-### 输出完成摘要
+### TG 通知 + 输出摘要
 
-输出结构化摘要供 dispatcher 捕获并转发 TG：
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "📝 P3 任务拆解完成：{feature-name}
+任务总数：{N}，建议策略：{单 Agent / 并行}"
 ```
-P3_DONE: {feature-name}
-任务总数：{N}
-建议执行策略：{单 Agent / 并行 Sub-agents}
-```
+
+输出摘要：`P3_DONE: {feature-name}`

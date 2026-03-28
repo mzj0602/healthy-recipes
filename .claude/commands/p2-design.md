@@ -76,11 +76,11 @@
 ### 第四步：确认
 列出关键技术决策（2-3 条），说明为什么这样设计，请用户确认。
 
-### 第五步：输出完成摘要
+### 第五步：TG 通知 + 输出摘要
 
-输出结构化摘要供 dispatcher 捕获并转发 TG：
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🎨 P2 技术设计完成：{feature-name}
+关键技术决策：{列表}"
 ```
-P2_DONE: {feature-name}
-关键技术决策：{列表}
-design.md 路径：specs/{feature-name}/...
-```
+
+输出摘要：`P2_DONE: {feature-name}`

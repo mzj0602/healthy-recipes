@@ -95,14 +95,14 @@ kill $WORKER_PID 2>/dev/null
 
 ### 第七步：测试结果处理
 
-- 全部通过 → 输出结构化摘要供 dispatcher 捕获并转发 TG：
+- 全部通过 → 发送 TG 通知：
+  ```bash
+  node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🧪 P6 测试完成：{feature-name}
+  单元 {N} 通过，E2E {N} 通过"
   ```
-  P6_DONE: {feature-name}
-  单元测试：{N} 通过，E2E：{N} 通过
-  ```
+  输出摘要：`P6_DONE: {feature-name}`
 - 有失败 → 分析失败原因，修复代码后重新执行测试，最多重试 2 次
-- 2 次后仍失败 → 停止，输出：
-  ```
-  P6_FAILED: {feature-name}
-  失败原因：{描述}，需人工介入
+- 2 次后仍失败 → 发送 TG 通知并停止：
+  ```bash
+  node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "❌ P6 测试失败：{feature-name}，需人工介入"
   ```
