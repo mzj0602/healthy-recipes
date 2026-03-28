@@ -8,26 +8,29 @@ function renderSiteChrome(
   activePage: 'home' | 'recipes' | 'plan' | 'detail' = 'home',
   onNavigate = vi.fn(),
   store = createStore(),
+  onLogout = vi.fn(),
 ) {
   render(
     <Provider store={store}>
-      <SiteChrome activePage={activePage} onNavigate={onNavigate} />
+      <SiteChrome activePage={activePage} currentUser="demo" onLogout={onLogout} onNavigate={onNavigate} />
     </Provider>,
   );
-  return { store, onNavigate };
+  return { store, onNavigate, onLogout };
 }
 
 describe('HeaderSearch', () => {
   let onNavigate: ReturnType<typeof vi.fn>;
+  let onLogout: ReturnType<typeof vi.fn>;
   let store: ReturnType<typeof createStore>;
 
   beforeEach(() => {
     onNavigate = vi.fn();
+    onLogout = vi.fn();
     store = createStore();
   });
 
   it('点击搜索图标后 input 出现', () => {
-    renderSiteChrome('home', onNavigate, store);
+    renderSiteChrome('home', onNavigate, store, onLogout);
 
     // input 初始不可见（宽度为 0）
     const input = screen.getByPlaceholderText('搜索菜谱...');
@@ -40,7 +43,7 @@ describe('HeaderSearch', () => {
   });
 
   it('输入空字符串按 Enter：searchAtom 不被写入，onNavigate 不被调用', () => {
-    renderSiteChrome('home', onNavigate, store);
+    renderSiteChrome('home', onNavigate, store, onLogout);
 
     fireEvent.click(screen.getByRole('button', { name: '搜索' }));
 
@@ -52,7 +55,7 @@ describe('HeaderSearch', () => {
   });
 
   it('输入关键词按 Enter：searchAtom = 关键词，onNavigate("recipes") 被调用', () => {
-    renderSiteChrome('home', onNavigate, store);
+    renderSiteChrome('home', onNavigate, store, onLogout);
 
     fireEvent.click(screen.getByRole('button', { name: '搜索' }));
 
@@ -65,7 +68,7 @@ describe('HeaderSearch', () => {
   });
 
   it('已在 recipes 页搜索：onNavigate 不被重复调用', () => {
-    renderSiteChrome('recipes', onNavigate, store);
+    renderSiteChrome('recipes', onNavigate, store, onLogout);
 
     fireEvent.click(screen.getByRole('button', { name: '搜索' }));
 
@@ -78,7 +81,7 @@ describe('HeaderSearch', () => {
   });
 
   it('按 Esc 键：input 收起，localValue 清空', () => {
-    renderSiteChrome('home', onNavigate, store);
+    renderSiteChrome('home', onNavigate, store, onLogout);
 
     fireEvent.click(screen.getByRole('button', { name: '搜索' }));
 
