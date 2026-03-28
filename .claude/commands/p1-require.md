@@ -63,11 +63,15 @@
 - 主要风险：{如有}
 ```
 
-### 第五步：输出完成摘要
+### 第五步：TG 通知 + 输出摘要
 
-输出结构化摘要供 dispatcher 捕获并转发 TG：
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "📋 P1 需求分析完成：{feature-name}
+核心功能点：{列表}
+主要风险：{如有}"
+```
+
+输出摘要：
 ```
 P1_DONE: {feature-name}
-核心功能点：{列表}
-主要风险：{如有}
 ```

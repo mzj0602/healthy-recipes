@@ -44,16 +44,15 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 
 ### 第四步：推送选择
 
-本地提交完成后，输出结构化摘要供 dispatcher 捕获并转发 TG，询问用户推送方式：
+本地提交完成后，发送 TG 通知询问用户推送方式：
 
-```
-P8_PENDING: {feature-name}
-commit: {hash}
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "✅ P8 提交完成：{feature-name} | commit: {hash}
 
-请选择下一步：
-1️⃣ 推送到当前分支 feature/{feature-name}
-2️⃣ 推送并创建 PR → main
-3️⃣ 保留本地，暂不推送
+请选择推送方式：
+1️⃣ 推送到 feature/{feature-name}
+2️⃣ 推送 + 创建 PR → main
+3️⃣ 暂不推送"
 ```
 
 等待用户回复：

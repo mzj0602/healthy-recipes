@@ -67,10 +67,11 @@
 输出所有已更新的文件列表，并说明每个文件更新了哪些内容。
 输出："✅ 文档同步完成"
 
-### 输出完成摘要
+### TG 通知 + 输出摘要
 
-输出结构化摘要供 dispatcher 捕获并转发 TG：
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "📚 P7 文档同步完成：{feature-name}
+更新文件：{列表}"
 ```
-P7_DONE: {feature-name}
-更新文件：{列表}
-```
+
+输出摘要：`P7_DONE: {feature-name}`
