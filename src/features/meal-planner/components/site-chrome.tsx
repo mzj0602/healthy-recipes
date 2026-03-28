@@ -7,6 +7,8 @@ import { searchAtom } from '@/features/recipes/store/recipeAtoms';
 interface SiteChromeProps {
   activePage: PlannerPageId;
   onNavigate: (page: PlannerPageId) => void;
+  currentUser: string;
+  onLogout: () => void;
 }
 
 interface HeaderSearchProps {
@@ -80,10 +82,10 @@ const navItems: Array<{ id: PlannerPageId; label: string }> = [
   { id: 'detail', label: '关于' },
 ];
 
-export function SiteChrome({ activePage, onNavigate }: SiteChromeProps) {
+export function SiteChrome({ activePage, onNavigate, currentUser, onLogout }: SiteChromeProps) {
   return (
     <header className="sticky top-0 z-50 bg-[#F9F8F6]/90 backdrop-blur-md border-b border-gray-200/50">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+      <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4">
         <button className="flex items-center gap-2 group" onClick={() => onNavigate('home')} type="button">
           <div className="w-10 h-10 bg-[#ec7f13] rounded-[8px] flex items-center justify-center">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -111,8 +113,11 @@ export function SiteChrome({ activePage, onNavigate }: SiteChromeProps) {
 
         <div className="flex items-center gap-3">
           <HeaderSearch activePage={activePage} onNavigate={onNavigate} />
+          <div className="hidden rounded-[8px] border border-[#f2dfcf] bg-white px-3 py-2 text-sm text-[#5d4230] shadow-sm sm:block">
+            你好，{currentUser}
+          </div>
           <button
-            className="flex items-center gap-2 px-4 py-2 bg-[#ec7f13] hover:bg-[#c7670b] text-white font-semibold rounded-[8px] transition-all"
+            className="flex items-center gap-2 rounded-[8px] bg-[#ec7f13] px-4 py-2 font-semibold text-white transition-all hover:bg-[#c7670b]"
             onClick={() => onNavigate('plan')}
             type="button"
           >
@@ -120,6 +125,13 @@ export function SiteChrome({ activePage, onNavigate }: SiteChromeProps) {
               <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
             </svg>
             个人中心
+          </button>
+          <button
+            className="rounded-[8px] border border-[#ead7c5] bg-white px-4 py-2 text-sm font-semibold text-[#7b5a45] transition-colors hover:border-[#ec7f13] hover:text-[#ec7f13]"
+            onClick={onLogout}
+            type="button"
+          >
+            退出
           </button>
         </div>
       </div>

@@ -50,3 +50,4 @@
 - `localStorage` 读写必须包裹 `try/catch`，兼容 Safari 隐私模式（会抛 `SecurityError`）
 - `localStorage` 仅存储用户本地个性化数据，禁止存储 API Key、token 或任何敏感凭证
 - 读取 `localStorage` 数据后须验证结构（`Array.isArray` 等），格式不合法时回退默认值，防止脏数据导致崩溃
+- 演示型登录功能如仅做前端校验，禁止在浏览器存储中保存密码；仅可保存最小必要的展示信息或登录标记

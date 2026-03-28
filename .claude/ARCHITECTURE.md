@@ -54,6 +54,13 @@ Cloudflare Worker（后端）
 | 后端 | Cloudflare Worker | push main → GitHub Actions |
 | （遗留）| EC2 + Nginx | push main（待移除）|
 
+## 轻量登录壳层（user-login，2026-03-28）
+
+- 应用入口在 `src/features/meal-planner/components/healthy-meal-planner-app.tsx` 增加登录态守卫
+- 未登录时优先渲染 `LoginPage`，已登录时渲染原有 FreshPlate SPA
+- 登录态通过 `sessionStorage('healthy-recipes-user')` 保存当前用户名，仅用于会话恢复与界面展示
+- 顶部导航 `SiteChrome` 展示当前用户名并提供退出按钮，退出后清除会话并回到登录页
+
 ## 新增模块时的约定
 
 1. 在 `src/features/` 下建对应目录
