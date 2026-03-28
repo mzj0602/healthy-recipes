@@ -1,3 +1,4 @@
+<!-- model: sonnet -->
 你是 FreshPlate 项目的 Review 协调者，负责调度 Codex 对代码进行审查，并根据反馈修改代码。
 
 参数：$ARGUMENTS
@@ -78,4 +79,31 @@ codex review --uncommitted
 ✅ Review 通过
 ```
 
+### 第七步：沉淀规范
+
+回顾本次所有轮次中 Codex 发现的问题，判断是否值得写入 `.claude/CODING_GUIDELINES.md`。
+
+**写入标准（满足任一条即写）：**
+- 同类问题在本次 Review 中出现 2 轮及以上
+- 属于安全类问题（XSS、注入、敏感信息泄露等）
+
+**不写入：**
+- 单次偶发的代码风格问题
+- 已有规范覆盖的重复项
+
+**写入方式：**
+- 提炼为一条简洁的规范或禁止项，不复制粘贴日志原文
+- 追加到 `CODING_GUIDELINES.md` 中最相关的章节末尾
+- 格式：`- ⚠️ {规范描述}（来源：{feature-name} review，{YYYY-MM-DD}）`
+
+如本次无符合条件的问题，跳过此步。
+
 输出："✅ Code Review 通过（共 {N} 轮），日志：specs/{feature-name}/review-log.md"
+
+### 输出完成摘要
+
+输出结构化摘要供 dispatcher 捕获并转发 TG：
+```
+P5_DONE: {feature-name}
+Review 轮数：{N}，修复问题：{N}
+```

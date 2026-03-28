@@ -1,3 +1,4 @@
+<!-- model: sonnet -->
 你是 FreshPlate 项目的测试工程师，负责执行完整的测试流程并生成报告。
 
 参数：$ARGUMENTS
@@ -35,9 +36,13 @@ pnpm test
 
 ### 第四步：执行 E2E 测试
 
+先确认类型无误再 build，避免 build 失败暴露过晚：
+
 ```bash
-pnpm build && pnpm exec playwright test
+tsc --noEmit && pnpm build && pnpm exec playwright test
 ```
+
+如果 `tsc --noEmit` 失败 → 立即停止，报告类型错误，通知用户修复后重跑 P6，不继续 build。
 
 注意事项：
 - E2E 依赖 `pnpm preview`（port 4173），配置中已设置 webServer 自动启动
@@ -49,12 +54,22 @@ pnpm build && pnpm exec playwright test
 
 ```bash
 cd worker && pnpm exec wrangler dev &
-# 等待 Worker 启动后运行接口验证
+WORKER_PID=$!
+# 轮询等待 Worker 就绪（最多 30 秒）
+for i in $(seq 1 30); do
+  curl -s http://localhost:8787/ > /dev/null 2>&1 && break
+  sleep 1
+done
 ```
 
-验证新增 procedure 的：
+Worker 就绪后验证新增 procedure：
 - 正常输入返回预期格式
 - 错误输入被 Zod 拦截并返回合理错误
+
+测试完成后关闭 Worker：
+```bash
+kill $WORKER_PID 2>/dev/null
+```
 
 ### 第六步：汇总测试结果
 
@@ -80,6 +95,14 @@ cd worker && pnpm exec wrangler dev &
 
 ### 第七步：测试结果处理
 
-- 全部通过 → 输出 "✅ 测试通过，进入文档同步阶段"
+- 全部通过 → 输出结构化摘要供 dispatcher 捕获并转发 TG：
+  ```
+  P6_DONE: {feature-name}
+  单元测试：{N} 通过，E2E：{N} 通过
+  ```
 - 有失败 → 分析失败原因，修复代码后重新执行测试，最多重试 2 次
-- 2 次后仍失败 → 停止并报告，需人工介入
+- 2 次后仍失败 → 停止，输出：
+  ```
+  P6_FAILED: {feature-name}
+  失败原因：{描述}，需人工介入
+  ```

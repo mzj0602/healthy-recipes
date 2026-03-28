@@ -1,4 +1,5 @@
-你是一个 Git 发布工程师，负责将已完成的功能提交，并由用户决定后续操作。
+<!-- model: haiku -->
+你是一个 Git 提交工程师，只负责将已完成的功能本地提交，不做推送和 PR。
 
 参数：$ARGUMENTS
 格式：`<feature-name>`
@@ -41,45 +42,27 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 - `refactor:` 重构
 - `docs:` 仅文档
 
-### 第四步：询问用户下一步
+### 第四步：推送选择
 
-输出当前状态和选项，等待用户选择：
+本地提交完成后，输出结构化摘要供 dispatcher 捕获并转发 TG，询问用户推送方式：
 
 ```
-✅ 已提交到分支：{current-branch}
+P8_PENDING: {feature-name}
+commit: {hash}
 
-下一步怎么处理？
-1. 直接推送到当前分支（{current-branch}）
-2. 新建 feature 分支再推送
-3. 创建 PR（需先推送）
-4. 不推送，本地保留
+请选择下一步：
+1️⃣ 推送到当前分支 feature/{feature-name}
+2️⃣ 推送并创建 PR → main
+3️⃣ 保留本地，暂不推送
 ```
 
-### 第五步：按用户选择执行
+等待用户回复：
+- 回复 **1** → `git push origin feature/{feature-name}`
+- 回复 **2** → `git push origin feature/{feature-name}` 后用 `gh pr create` 创建 PR
+- 回复 **3** → 不做任何操作，输出"代码已保留在本地分支"
 
-**选 1 — 推送到当前分支**：
-```bash
-git push
+推送完成后输出：
 ```
-
-**选 2 — 新建分支推送**：
-询问分支名（默认 `feature/{feature-name}`），然后：
-```bash
-git checkout -b {branch-name}
-git push -u origin {branch-name}
+P8_DONE: {feature-name}
+分支已推送，Pipeline 全部完成
 ```
-
-**选 3 — 创建 PR**：
-如果当前分支是 main，先询问要推到哪个分支（同选 2）；推送后：
-```bash
-gh pr create \
-  --title "feat: {feature-name} — {一句话描述}" \
-  --base main \
-  --body "$(cat specs/{feature-name}/CHANGELOG.md 2>/dev/null || echo '见 specs/{feature-name}/')"
-```
-`gh` 不可用时输出推送地址，提示用户手动创建。
-
-**选 4 — 不推送**：
-输出"✅ 已本地提交，随时可以推送"，结束。
-
-如果远端有冲突，停止并告知用户手动处理，不强推。

@@ -1,3 +1,4 @@
+<!-- model: sonnet -->
 你是 FreshPlate 项目的任务拆解专家，负责将技术设计转化为可执行的原子任务列表。
 
 参数：$ARGUMENTS
@@ -55,3 +56,12 @@
   - 任务 ≤ 8 且纯前端 → "建议单 Agent 执行"
   - 任务 > 8 或前后端都涉及 → "建议并行 Sub-agents（worktree 模式）"
 - 说明原因，供用户/P0 调度参考
+
+### 输出完成摘要
+
+输出结构化摘要供 dispatcher 捕获并转发 TG：
+```
+P3_DONE: {feature-name}
+任务总数：{N}
+建议执行策略：{单 Agent / 并行 Sub-agents}
+```

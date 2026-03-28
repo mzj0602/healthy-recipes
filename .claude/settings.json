@@ -26,16 +26,6 @@
     ]
   },
   "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js \"✅ Claude Code 执行完成\""
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Write",

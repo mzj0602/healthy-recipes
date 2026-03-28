@@ -1,3 +1,4 @@
+<!-- model: sonnet -->
 你是 FreshPlate 项目的开发工程师，负责按任务列表实现代码。
 
 参数：$ARGUMENTS
@@ -12,9 +13,11 @@
 - `.claude/CODING_GUIDELINES.md` — 编码规范
 - `specs/{feature-name}/` 最新 `design.md` — 设计参考
 
-### 第二步：逐条执行任务
+### 第二步：按模块循环执行（生成 → 验证 → 生成）
 
-对每一条 `- [ ]` 任务：
+tasks.md 中的任务通常按模块分组（如"数据层"、"组件层"、"Worker 层"）。每完成一个模块后触发 mini-review，通过后再进入下一模块。
+
+**单条任务执行：**
 
 1. 输出："▶ 执行 {T编号}：{任务描述}"
 2. 实现代码（严格遵守 CODING_GUIDELINES.md）
@@ -25,6 +28,18 @@
 5. 如果类型检查失败：
    - 修复错误后再标记完成
    - 不允许带类型错误进入下一条任务
+
+**模块完成后触发 mini-review：**
+
+tasks.md 按分组划分模块（共享类型 / Worker / 前端 / 测试），每完成一个完整分组后触发。如果某分组任务数超过 5 条，则每完成 3 条触发一次，不必等整组完成。执行：
+
+```bash
+codex review --uncommitted
+```
+
+- 输出 LGTM → 输出"✅ mini-review 通过，进入下一模块"，继续
+- 有问题 → 逐条修复，修复后再次运行 `tsc --noEmit` 确认，修复完才进入下一模块
+- 同类问题连续出现 → 立即写入 `.claude/CODING_GUIDELINES.md`，防止后续模块重犯
 
 ### 第三步：编码规范检查清单
 
@@ -50,4 +65,9 @@
 
 1. 再次运行 `tsc --noEmit` 确认整体无类型错误
 2. 运行 `pnpm test` 确认单元测试全部通过
-3. 输出完成摘要：已完成任务数 / 总任务数
+3. 输出结构化摘要供 dispatcher 捕获并转发 TG：
+   ```
+   P4_DONE: {feature-name}
+   完成任务：{已完成数}/{总数}
+   mini-review 轮数：{N}
+   ```
