@@ -19,7 +19,7 @@ describe('LoginPage', () => {
 
     render(<LoginPage onLogin={onLogin} />);
 
-    fireEvent.change(screen.getByLabelText('邮箱或用户名'), { target: { value: 'wrong' } });
+    fireEvent.change(screen.getByLabelText('用户名'), { target: { value: 'wrong' } });
     fireEvent.change(screen.getByLabelText('密码'), { target: { value: 'badpass' } });
     fireEvent.click(screen.getByRole('button', { name: '登录' }));
 
@@ -34,7 +34,7 @@ describe('LoginPage', () => {
 
     render(<LoginPage onLogin={onLogin} />);
 
-    fireEvent.change(screen.getByLabelText('邮箱或用户名'), { target: { value: 'demo' } });
+    fireEvent.change(screen.getByLabelText('用户名'), { target: { value: 'demo' } });
     fireEvent.change(screen.getByLabelText('密码'), { target: { value: '123456' } });
     fireEvent.click(screen.getByRole('button', { name: '登录' }));
 
