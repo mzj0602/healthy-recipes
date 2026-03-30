@@ -8,31 +8,34 @@ import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import path from 'path'
 
-// 优先读项目 .env；fallback 只补充项目 .env 中未出现的 key（含空值 key 也视为已定义）
-const projectEnvPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env')
-const globalEnvPath = process.env.HOME ? path.join(process.env.HOME, '.claude', '.env') : null
-
-const projectKeys = new Set()
-try {
-  readFileSync(projectEnvPath, 'utf-8').split('\n').forEach(line => {
-    const [key, ...vals] = line.split('=')
-    const k = key?.trim()
-    if (!k || !vals.length) return
-    projectKeys.add(k)
-    if (!process.env[k]) process.env[k] = vals.join('=').trim()
-  })
-} catch {}
-
-if (globalEnvPath) {
+// 从 .env 文件加载变量，仅补充 shell 中未定义的 key（已定义含空值的 key 不覆盖）
+function loadEnv(filePath, skipKeys) {
   try {
-    readFileSync(globalEnvPath, 'utf-8').split('\n').forEach(line => {
-      const [key, ...vals] = line.split('=')
-      const k = key?.trim()
-      if (!k || !vals.length || projectKeys.has(k) || process.env[k]) return
-      process.env[k] = vals.join('=').trim()
+    readFileSync(filePath, 'utf-8').split('\n').forEach(line => {
+      const match = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/)
+      if (!match) return
+      const k = match[1]
+      if (skipKeys?.has(k) || k in process.env) return
+      // 去掉值首尾的引号（单引号或双引号）
+      process.env[k] = match[2].trim().replace(/^(['"])(.*)\1$/, '$2')
     })
   } catch {}
 }
+
+const projectEnvPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env')
+const globalEnvPath = process.env.HOME ? path.join(process.env.HOME, '.claude', '.env') : null
+
+// 记录项目 .env 中出现的所有 key（含空值），防止 global fallback 覆盖
+const projectKeys = new Set()
+try {
+  readFileSync(projectEnvPath, 'utf-8').split('\n').forEach(line => {
+    const match = line.match(/^([A-Z_][A-Z0-9_]*)=/)
+    if (match) projectKeys.add(match[1])
+  })
+} catch {}
+
+loadEnv(projectEnvPath)
+if (globalEnvPath) loadEnv(globalEnvPath, projectKeys)
 
 const text = process.argv[2]
 const token = process.env.TG_BOT_TOKEN

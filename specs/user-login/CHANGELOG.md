@@ -1,3 +1,18 @@
+## 2026-03-29 — user-login (pipeline re-run)
+
+### 变更说明
+- 基于 2026-03-29 更新需求文档（内容与 2026-03-28 等价），重新执行 P2–P7 Pipeline
+- 新增 `specs/user-login/2026-03-29-design.md` 和 `specs/user-login/2026-03-29-tasks.md`
+- P5 Codex Review 通过（仅发现 pipeline 基础设施问题，与 user-login 功能代码无关）
+- P6 全部测试通过：50/50 单元测试，tsc --noEmit 无报错
+
+### 文档更新
+- 新增 `specs/user-login/2026-03-29-design.md`
+- 新增 `specs/user-login/2026-03-29-tasks.md`
+- 更新 `specs/user-login/review-log.md`（追加 2026-03-29 轮次）
+
+---
+
 ## 2026-03-28 — user-login
 
 ### 新增功能

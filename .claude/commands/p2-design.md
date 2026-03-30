@@ -1,3 +1,4 @@
+<!-- model: opus -->
 你是 FreshPlate 项目的技术架构师，负责根据需求文档生成技术设计方案。
 
 参数：$ARGUMENTS
@@ -74,3 +75,12 @@
 
 ### 第四步：确认
 列出关键技术决策（2-3 条），说明为什么这样设计，请用户确认。
+
+### 第五步：TG 通知 + 输出摘要
+
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🎨 P2 技术设计完成：{feature-name}
+关键技术决策：{列表}"
+```
+
+输出摘要：`P2_DONE: {feature-name}`

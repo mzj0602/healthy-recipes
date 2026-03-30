@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Lock, User } from 'lucide-react';
 
 interface LoginPageProps {
   onLogin: (payload: { username: string }) => void;
@@ -43,101 +42,77 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
       setError('用户名或密码错误');
       setIsSubmitting(false);
-    }, 500);
+    }, 400);
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(236,127,19,0.14),_transparent_35%),linear-gradient(180deg,#fffaf5_0%,#f9f8f6_48%,#f4efe9_100%)] px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl items-center justify-center">
-        <div className="grid w-full overflow-hidden rounded-[28px] border border-white/60 bg-white/85 shadow-[0_30px_80px_-32px_rgba(63,38,23,0.3)] backdrop-blur md:grid-cols-[1.05fr_0.95fr]">
-          <section className="flex flex-col justify-between bg-[#fff7f0] px-7 py-8 sm:px-10 sm:py-10">
-            <div className="space-y-6">
-              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#c7670b] shadow-sm">
-                FreshPlate
-                <span className="rounded-full bg-[#fde6d0] px-2 py-0.5 text-xs text-[#a95505]">健康饮食平台</span>
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#c7670b]">欢迎回来</p>
-                <h1 className="max-w-md text-4xl font-black leading-tight tracking-[-0.03em] text-[#3f2617] sm:text-5xl">
-                  登录后继续管理你的健康食谱与饮食计划
-                </h1>
-                <p className="max-w-xl text-base leading-7 text-[#8a674f] sm:text-lg">
-                  先做一个轻量版登录页：支持用户名和密码登录，登录成功后即可进入当前应用主页。
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {[
-                ['个性化食谱', '快速查看推荐菜谱和营养搭配'],
-                ['饮食计划', '继续编辑你的每日摄入安排'],
-                ['简单登录', '当前演示账号可直接体验流程'],
-              ].map(([title, desc]) => (
-                <div className="rounded-[20px] border border-[#f2dfcf] bg-white/90 p-4 shadow-sm" key={title}>
-                  <p className="text-sm font-bold text-[#3f2617]">{title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#8a674f]">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="flex items-center px-6 py-8 sm:px-10 sm:py-10">
-            <div className="mx-auto w-full max-w-md">
-              <div className="rounded-[24px] border border-[#f5e7da] bg-white p-6 shadow-[0_20px_50px_-30px_rgba(236,127,19,0.45)] sm:p-8">
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-bold tracking-[-0.02em] text-[#3f2617]">账号登录</h2>
-                  <p className="text-sm leading-6 text-[#8a674f]">
-                    使用用户名和密码登录。
-                    <br />
-                    演示账号：<span className="font-semibold text-[#c7670b]">demo</span> / <span className="font-semibold text-[#c7670b]">123456</span>
-                  </p>
-                </div>
-
-                <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#5d4230]" htmlFor="username">
-                      用户名
-                    </label>
-                    <Input
-                      autoComplete="username"
-                      className="h-11 rounded-[16px] border-[#ead7c5] bg-[#fffdfa]"
-                      id="username"
-                      onChange={(event) => setUsername(event.target.value)}
-                      placeholder="请输入用户名"
-                      value={username}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#5d4230]" htmlFor="password">
-                      密码
-                    </label>
-                    <Input
-                      autoComplete="current-password"
-                      className="h-11 rounded-[16px] border-[#ead7c5] bg-[#fffdfa]"
-                      id="password"
-                      onChange={(event) => setPassword(event.target.value)}
-                      placeholder="请输入密码"
-                      type="password"
-                      value={password}
-                    />
-                  </div>
-
-                  {error ? (
-                    <div className="rounded-[16px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                      {error}
-                    </div>
-                  ) : null}
-
-                  <Button className="h-11 w-full rounded-[16px] text-sm font-semibold" disabled={isSubmitting} size="lg" type="submit">
-                    {isSubmitting ? '登录中...' : '登录'}
-                  </Button>
-                </form>
-              </div>
-            </div>
-          </section>
+    <div className="flex min-h-screen items-center justify-center bg-[#f9f8f6] px-4 py-12">
+      <div className="w-full max-w-md rounded-2xl border border-[#f2dfcf] bg-white p-8 shadow-[0_20px_60px_rgba(63,38,23,0.08)] sm:p-10">
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ec7f13] text-white shadow-lg">
+            <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#ec7f13]">FreshPlate</p>
+          <h1 className="mt-3 text-3xl font-bold tracking-[-0.03em] text-[#3f2617]">账号登录</h1>
+          <p className="mt-2 text-sm text-[#8b6b55]">输入用户名和密码即可进入健康食谱系统</p>
+          <p className="mt-3 rounded-xl bg-[#fff4e8] px-4 py-3 text-xs text-[#9a5b1a]">
+            演示账号：<span className="font-semibold">demo</span> / <span className="font-semibold">123456</span>
+          </p>
         </div>
+
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-[#5d4230]" htmlFor="username">
+              用户名
+            </label>
+            <div className="relative">
+              <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#aa8367]" />
+              <input
+                id="username"
+                type="text"
+                autoComplete="username"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder="请输入用户名"
+                className="w-full rounded-xl border border-[#e7d7ca] bg-[#fffdfb] py-3 pl-10 pr-4 text-sm text-[#3f2617] outline-none transition focus:border-[#ec7f13] focus:ring-4 focus:ring-[#ec7f13]/10"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-[#5d4230]" htmlFor="password">
+              密码
+            </label>
+            <div className="relative">
+              <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#aa8367]" />
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="请输入密码"
+                className="w-full rounded-xl border border-[#e7d7ca] bg-[#fffdfb] py-3 pl-10 pr-4 text-sm text-[#3f2617] outline-none transition focus:border-[#ec7f13] focus:ring-4 focus:ring-[#ec7f13]/10"
+              />
+            </div>
+          </div>
+
+          {error ? (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              {error}
+            </div>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full rounded-xl bg-[#ec7f13] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#c7670b] disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isSubmitting ? '登录中...' : '登录'}
+          </button>
+        </form>
       </div>
     </div>
   );

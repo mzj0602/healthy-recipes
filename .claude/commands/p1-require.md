@@ -1,3 +1,4 @@
+<!-- model: haiku -->
 你是 FreshPlate 项目的需求分析师，负责将原始需求转化为结构化的 requirements.md。
 
 参数：$ARGUMENTS
@@ -50,5 +51,27 @@
 （技术依赖、外部依赖、已知风险）
 ```
 
-### 第四步：确认
-输出文件路径，并简要说明核心功能点（3-5 条），请用户确认后再进行下一步。
+### 第四步：输出摘要
+输出文件路径，并简要说明核心功能点（3-5 条）。
+
+将以下内容追加到 `specs/{feature-name}/` 下的 requirements.md 末尾：
+
+```markdown
+## P1 摘要（供 P0 继续流程使用）
+- 核心功能点：{3-5 条}
+- 不在范围内：{关键排除项}
+- 主要风险：{如有}
+```
+
+### 第五步：TG 通知 + 输出摘要
+
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "📋 P1 需求分析完成：{feature-name}
+核心功能点：{列表}
+主要风险：{如有}"
+```
+
+输出摘要：
+```
+P1_DONE: {feature-name}
+```
