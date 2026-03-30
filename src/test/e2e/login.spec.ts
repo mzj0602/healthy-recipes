@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('登录流程', () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => window.sessionStorage.clear());
