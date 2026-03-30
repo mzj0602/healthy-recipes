@@ -35,11 +35,16 @@ jobs:
           path: test-results/unit/
           retention-days: 14
 
+      - name: Build for E2E
+        run: pnpm build
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
       - name: E2E tests
-        run: pnpm test:e2e
+        run: pnpm exec playwright test
+        env:
+          CI: true
 
       - name: Upload E2E test report
         if: always()
