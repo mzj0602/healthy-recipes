@@ -26,19 +26,23 @@
 
 ### 第三步：调用 Codex 执行 Review
 
-运行以下命令：
+**必须使用 Bash 工具执行以下命令，禁止模拟或推断输出：**
 
 ```bash
-codex review --uncommitted
+codex review --uncommitted 2>&1
 ```
 
-将 Codex 完整输出追加到 `review-log.md`：
+**强制约束：**
+- 必须等待命令执行完毕，获取真实 stdout
+- 将 Codex 的完整原始输出（verbatim，一字不改）追加到 `review-log.md`
+- 如果命令执行失败（exit code 非 0）或输出为空，立即停止并报告错误，不得继续
+- 禁止根据上下文"推测"Codex 会输出什么，禁止自行编写 Codex 输出内容
 
 ```markdown
 ## Round {N}
 
-### Codex 输出
-{Codex 的完整输出内容}
+### Codex 输出（原始）
+{Codex 命令的完整 stdout，原样复制，不得修改}
 ```
 
 ### 第四步：解析 Codex 输出
