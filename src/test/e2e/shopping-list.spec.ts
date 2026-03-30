@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // Helper: navigate to health plan page via SPA click flow
 async function goToHealthPlanPage(page: import('@playwright/test').Page) {

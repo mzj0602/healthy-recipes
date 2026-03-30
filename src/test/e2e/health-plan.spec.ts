@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('个人健康周计划页', () => {
   test.beforeEach(async ({ page }) => {

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('菜谱探索页', () => {
   test.beforeEach(async ({ page }) => {

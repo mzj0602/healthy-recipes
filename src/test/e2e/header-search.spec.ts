@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('Header 搜索框', () => {
   test.beforeEach(async ({ page }) => {
