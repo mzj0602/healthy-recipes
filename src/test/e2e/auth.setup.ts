@@ -21,9 +21,10 @@ setup('authenticate', async ({ page }) => {
   const entry = { name: 'healthy-recipes-user', value: username ?? '' };
   const origin = state.origins?.find((o: { origin: string }) => o.origin === 'http://localhost:4173');
   if (origin) {
+    origin.localStorage = origin.localStorage ?? [];
     origin.sessionStorage = [entry];
   } else {
-    state.origins = [{ origin: 'http://localhost:4173', sessionStorage: [entry] }];
+    state.origins = [{ origin: 'http://localhost:4173', localStorage: [], sessionStorage: [entry] }];
   }
   writeFileSync(authFile, JSON.stringify(state));
 });
