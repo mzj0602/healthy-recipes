@@ -11,7 +11,8 @@
 1. `.claude/ARCHITECTURE.md` — 系统整体架构
 2. `.claude/SECURITY.md` — 安全规范
 3. `.claude/CODING_GUIDELINES.md` — 编码规范
-4. `specs/{feature-name}/` 目录下最新的 `requirements.md`
+4. `specs/{feature-name}/` 目录下文件名字典序最后一个 `requirements.md`
+5. `specs/{feature-name}/ui/README.md`（如存在）— UI 设计摘要与设计稿索引
 
 ### 第二步：分析技术影响范围
 判断本次需求涉及哪些层：
@@ -43,6 +44,9 @@
 （新增或修改的 TypeScript 类型定义，放在哪个文件）
 
 ## 前端方案
+### UI 设计输入
+（基于 `specs/{feature-name}/ui/README.md` 和设计稿文件，总结页面布局、关键组件、视觉要求与交互要点；若 P2b 跳过，则明确说明本次仅基于 requirements.md 设计）
+
 ### 新增组件
 （组件名、路径、职责）
 
@@ -73,14 +77,49 @@
 （明确排除项）
 ```
 
-### 第四步：确认
-列出关键技术决策（2-3 条），说明为什么这样设计，请用户确认。
+### 第四步：Codex 设计审查（Generator-Critic）
 
-### 第五步：TG 通知 + 输出摘要
+**必须使用 Bash 工具执行以下命令，禁止模拟输出：**
+
+```bash
+codex exec "你是一个技术架构审查员。请审查以下 FreshPlate 项目（React 18 + TypeScript + Vite + Cloudflare Worker + tRPC）的技术设计方案，找出：
+1. 遗漏的边界情况或异常处理
+2. 方案内部的矛盾或冲突
+3. 过度设计或可以简化的地方
+4. 安全隐患
+5. 与现有架构不一致的地方
+
+设计方案内容：
+$(cat specs/{feature-name}/$(ls specs/{feature-name}/ | grep design | sort | tail -1))" 2>&1
+```
+
+- 输出包含问题 → 逐条修订 design.md，并在文档末尾追加：
+  ```markdown
+  ## Codex Design Review
+  ### 审查结论
+  - 发现问题并已修订
+
+  ### 修订记录
+  - ✅ {修订内容1}
+  - ✅ {修订内容2}
+  ```
+- 输出 LGTM 或无实质问题 → 也要在文档末尾追加：
+  ```markdown
+  ## Codex Design Review
+  ### 审查结论
+  - LGTM，无需额外修订
+  ```
+
+### 第五步：输出决策摘要
+列出关键技术决策（2-3 条）及理由（含 Codex 审查后的调整），写入 design.md 末尾的"## 关键决策"章节，供后续阶段参考。P2 完成后自动接续，无需等待用户确认。
+
+### 第六步：TG 通知 + 输出摘要
 
 ```bash
 node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🎨 P2 技术设计完成：{feature-name}
-关键技术决策：{列表}"
+关键技术决策：{列表}
+Codex 设计审查已完成并写入 design.md。
+下一步将自动继续进入 P3 任务拆解，你无需操作。"
 ```
 
 输出摘要：`P2_DONE: {feature-name}`

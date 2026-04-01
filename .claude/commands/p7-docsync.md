@@ -7,7 +7,7 @@
 ## 执行步骤
 
 ### 第一步：读取本次变更内容
-读取 `specs/{feature-name}/` 下最新的：
+读取 `specs/{feature-name}/` 下文件名字典序最后一个：
 - `requirements.md` — 功能描述
 - `design.md` — 技术变更
 - `tasks.md` — 实际完成的任务

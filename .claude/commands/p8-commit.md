@@ -56,7 +56,8 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```bash
 node scripts/notify-tg.js "🎉 Pipeline 完成：{feature-name}
 commit: {hash}
-{推送结果：已推送分支 / 已创建 PR: {url} / 仅本地提交}"
+{推送结果：已推送分支 / 已创建 PR: {url} / 仅本地提交}
+当前无需你再执行操作。"
 ```
 
 输出：`P8_DONE: {feature-name}`

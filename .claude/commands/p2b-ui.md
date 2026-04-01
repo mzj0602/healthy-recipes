@@ -6,12 +6,20 @@
 
 ## 执行步骤
 
-### 第一步：读取需求与设计上下文
+### 第一步：读取需求与产品上下文
 并行读取：
-- `specs/{feature-name}/` 下最新的 `requirements.md` — 了解功能描述
-- `specs/{feature-name}/` 下最新的 `design.md` — 了解涉及哪些页面/组件
+- `specs/{feature-name}/` 下文件名字典序最后一个 `requirements.md` — 了解功能描述
+- `docs/PRD.md` — 了解产品定位与现有页面风格
 
 ### 第二步：查找现有 Stitch 设计稿
+
+> **Stitch MCP 不可用时**：若 `mcp__stitch__list_projects` 调用失败（连接错误、认证失效等），直接跳过 P2b，发送通知后退出：
+> ```bash
+> node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "⚠️ P2b 跳过：Stitch MCP 不可用。
+下一步将自动继续进入 P2 技术设计，你无需操作。"
+> ```
+> 输出：`P2b_SKIPPED: {feature-name}`，后续 P2 技术设计将仅基于 requirements.md 继续，P4 再以生成的 design.md 为参考。
+
 1. 调用 `mcp__stitch__list_projects`，找到 FreshPlate 项目，记录 `projectId`
 2. 调用 `mcp__stitch__list_screens`（传入 `projectId`），列出所有已有屏幕
 3. 根据 feature-name 和 requirements.md 中涉及的页面，匹配相关屏幕，匹配规则优先级：
@@ -34,7 +42,7 @@
   - 应用名称：FreshPlate 健康菜谱平台
   - 设计风格：简洁现代，白底绿色主色调，使用 shadcn/ui 组件风格
   - 具体功能描述：来自 requirements.md 的功能点
-  - 涉及的页面元素：来自 design.md 的组件描述
+  - 涉及的页面元素：来自 requirements.md 中的页面和交互需求
 
 **注意**：`generate_screen_from_text` 可能需要几分钟，耐心等待，不要重试。
 
@@ -67,8 +75,10 @@
 
 ### 输出完成摘要
 
-输出结构化摘要供 dispatcher 捕获并转发 TG：
-```
-P2b_DONE: {feature-name}
+```bash
+node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🖼️ P2b UI 设计稿完成：{feature-name}
 设计稿路径：specs/{feature-name}/ui/
+下一步将自动继续进入 P2 技术设计，你无需操作。"
 ```
+
+输出：`P2b_DONE: {feature-name}`

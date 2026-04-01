@@ -60,6 +60,7 @@ Cloudflare Worker（后端）
 - 未登录时优先渲染 `LoginPage`，已登录时渲染原有 FreshPlate SPA
 - 登录态通过 `sessionStorage('healthy-recipes-user')` 保存当前用户名，仅用于会话恢复与界面展示
 - 顶部导航 `SiteChrome` 展示当前用户名并提供退出按钮，退出后清除会话并回到登录页
+- 登录页 UI 已于 2026-04-01 对齐全局设计系统，使用 shadcn/ui `<Input>`、`<Button>` 组件及 CSS 变量 token，零硬编码颜色
 
 ## 新增模块时的约定
 

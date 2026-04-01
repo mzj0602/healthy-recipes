@@ -30,6 +30,7 @@ import { Button } from '../../../components/ui/button'
 - 需要新增 shadcn 组件时，用 `pnpm dlx shadcn@latest add {component}`
 - 自定义样式用 `cn()` 工具函数合并 className，不直接拼字符串
 
+- 页面级 UI 改造时，优先将硬编码 hex 颜色替换为 CSS 变量 token（`bg-primary`、`text-foreground` 等），保持与全站设计系统一致
 ```typescript
 import { cn } from '@/lib/utils'
 

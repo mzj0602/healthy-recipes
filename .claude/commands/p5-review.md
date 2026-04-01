@@ -13,7 +13,7 @@
 
 ### 第一步：读取变更上下文
 
-读取 `specs/{feature-name}/` 下最新的 `tasks.md`，获取所有 `[x]` 任务涉及的文件范围。
+读取 `specs/{feature-name}/` 下文件名字典序最后一个 `tasks.md`，获取所有 `[x]` 任务涉及的文件范围。
 读取 `.claude/SECURITY.md` 了解安全必检项。
 
 ### 第二步：初始化 Review 日志
@@ -35,7 +35,13 @@ codex review --uncommitted 2>&1
 **强制约束：**
 - 必须等待命令执行完毕，获取真实 stdout
 - 将 Codex 的完整原始输出（verbatim，一字不改）追加到 `review-log.md`
-- 如果命令执行失败（exit code 非 0）或输出为空，立即停止并报告错误，不得继续
+- 如果命令 exit code 非 0 → 立即停止，发送 TG 告警后退出，**禁止自行 review 替代**：
+  ```bash
+  node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "❌ P5 中断：{feature-name}
+  Codex review 命令执行失败（exit code 非 0），需人工介入。
+  修复后可用 --from p5 重新触发。"
+  ```
+- exit code 0 但输出为空 → 视为无未提交变更，记录"无变更，跳过"并继续
 - 禁止根据上下文"推测"Codex 会输出什么，禁止自行编写 Codex 输出内容
 
 ```markdown
@@ -108,7 +114,8 @@ codex review --uncommitted 2>&1
 
 ```bash
 node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🔍 P5 Review 完成：{feature-name}
-Review {N} 轮，修复 {N} 个问题"
+Review {N} 轮，修复 {N} 个问题
+下一步将自动继续进入 P6 测试，你无需操作。"
 ```
 
 输出摘要：`P5_DONE: {feature-name}`

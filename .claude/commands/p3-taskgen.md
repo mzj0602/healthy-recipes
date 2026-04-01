@@ -7,7 +7,7 @@
 ## 执行步骤
 
 ### 第一步：读取设计文档
-读取 `specs/{feature-name}/` 下最新的 `design.md`。
+读取 `specs/{feature-name}/` 下文件名字典序最后一个 `design.md`。
 
 ### 第二步：拆解任务
 按以下原则拆解：
@@ -61,7 +61,8 @@
 
 ```bash
 node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "📝 P3 任务拆解完成：{feature-name}
-任务总数：{N}，建议策略：{单 Agent / 并行}"
+任务总数：{N}，建议策略：{单 Agent / 并行}
+下一步将自动继续进入 P4 开发，你无需操作。"
 ```
 
 输出摘要：`P3_DONE: {feature-name}`

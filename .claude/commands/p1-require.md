@@ -63,13 +63,9 @@
 - 主要风险：{如有}
 ```
 
-### 第五步：TG 通知 + 输出摘要
+### 第五步：输出摘要
 
-```bash
-node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "📋 P1 需求分析完成：{feature-name}
-核心功能点：{列表}
-主要风险：{如有}"
-```
+输出 `P1_DONE: {feature-name}`，由 p0 统一发送 P1 暂停通知（含确认请求）。
 
 输出摘要：
 ```

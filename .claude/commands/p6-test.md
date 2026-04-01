@@ -7,7 +7,7 @@
 ## 执行步骤
 
 ### 第一步：读取测试策略
-读取 `specs/{feature-name}/` 下最新 `design.md` 中的"测试策略"章节。
+读取 `specs/{feature-name}/` 下文件名字典序最后一个 `design.md` 中的"测试策略"章节。
 
 ### 第二步：补全测试代码（如缺失）
 
@@ -25,13 +25,16 @@
 - 通过点击 UI 元素切换页面
 - 覆盖 requirements.md 中的每条验收标准
 
-### 第三步：执行单元测试
+### 第三步：全量回归测试
+
+先跑全量单元测试，确认新功能没有破坏已有模块：
 
 ```bash
 pnpm test
 ```
 
-- 如果失败：分析错误原因，修复代码或测试，重新运行
+- 全部通过 → 继续
+- 有失败 → 分析是新功能引入的 side effect 还是原有测试问题，修复后重新运行，确认通过再继续
 - 测试报告输出到 `test-results/unit/`
 
 ### 第四步：执行 E2E 测试
@@ -98,7 +101,8 @@ kill $WORKER_PID 2>/dev/null
 - 全部通过 → 发送 TG 通知：
   ```bash
   node /Users/mzj/Desktop/healthy-recipes/scripts/notify-tg.js "🧪 P6 测试完成：{feature-name}
-  单元 {N} 通过，E2E {N} 通过"
+  单元 {N} 通过，E2E {N} 通过
+  下一步将自动继续进入 P7 文档同步，你无需操作。"
   ```
   输出摘要：`P6_DONE: {feature-name}`
 - 有失败 → 分析失败原因，修复代码后重新执行测试，最多重试 2 次
