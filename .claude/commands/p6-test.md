@@ -9,11 +9,9 @@
 ### 第一步：读取测试策略
 读取 `specs/{feature-name}/` 下文件名字典序最后一个 `design.md` 中的"测试策略"章节。
 
-### 第二步：补全测试代码（如缺失）
+### 第二步：实现测试任务
 
-检查 `src/test/unit/` 和 `src/test/e2e/` 下是否有对应 feature 的测试文件。
-
-如果缺少测试文件，根据 `design.md` 和 `requirements.md` 的验收标准生成：
+读取 `specs/{feature-name}/` 下文件名字典序最后一个 `tasks.md`，找到所有 `[test-spec]` 标注的未完成任务，逐条实现。
 
 **单元测试**（`src/test/unit/{feature}.test.ts`）：
 - 测试新增数据结构的完整性
@@ -24,6 +22,14 @@
 - 注意：SPA 状态路由，不能用 `page.goto('/path')`
 - 通过点击 UI 元素切换页面
 - 覆盖 requirements.md 中的每条验收标准
+
+**断言逻辑自审（每条测试写完必须检查）：**
+- 断言方向是否正确（`toBeVisible` vs `not.toBeVisible`，`toHaveClass` 的值是否准确）
+- 测试意图和断言是否一致（测"收起"就要断言"不可见/宽度为0"，不能断言"可见"）
+- 选择器是否依赖 CSS 类名或 DOM 层级（应优先用 `getByRole`/`getByText`/`getByLabel`）
+- CSS 动画隐藏（`w-0 opacity-0`）不等于 DOM 隐藏，Playwright 的 `toBeVisible` 无法识别，需改用 `toHaveClass` 或 `toHaveAttribute`
+
+实现完成后将 tasks.md 中对应 `[test-spec]` 任务标记为 `[x]`。
 
 ### 第三步：全量回归测试
 

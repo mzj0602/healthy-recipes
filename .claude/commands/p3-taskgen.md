@@ -41,9 +41,9 @@
 - [ ] T06 [frontend] 在 `src/features/{feature}/components/{Page}.tsx` 集成新组件
 - [ ] T07 [frontend] 更新 `src/app/App.tsx` 添加新页面状态（如需要）
 
-## 测试任务
-- [ ] T08 [test] 新增单元测试 `src/test/unit/{feature}.test.ts`
-- [ ] T09 [test] 新增 E2E 测试 `src/test/e2e/{feature}.spec.ts`
+## 测试任务（由 P6 实现，P4 跳过）
+- [ ] T08 [test-spec] 新增单元测试 `src/test/unit/{feature}.test.ts`，覆盖验收标准中的边界用例
+- [ ] T09 [test-spec] 新增 E2E 测试 `src/test/e2e/{feature}.spec.ts`，覆盖每条用户流程
 
 ---
 **完成标准**：所有任务 [x]，tsc --noEmit 无报错，pnpm test 全部通过

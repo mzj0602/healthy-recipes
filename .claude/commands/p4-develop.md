@@ -9,6 +9,8 @@
 ### 第一步：读取任务列表
 读取 `specs/{feature-name}/` 下文件名字典序最后一个 `tasks.md`，找到所有 `- [ ]` 未完成的任务。
 
+**只执行 `[types]`、`[worker]`、`[frontend]` 标注的任务，跳过所有 `[test-spec]` 任务**（测试由 P6 独立实现）。
+
 同时读取：
 - `.claude/CODING_GUIDELINES.md` — 编码规范
 - `specs/{feature-name}/` 文件名字典序最后一个 `design.md` — 设计参考
