@@ -29,6 +29,6 @@ test.describe('login-ui-sync', () => {
     await page.getByPlaceholder('example@freshplate.com').fill('demo');
     await page.getByPlaceholder('••••••••').fill('123456');
     await page.getByRole('button', { name: '登录' }).click();
-    await expect(page.getByText(/FreshPlate|健康菜谱|今日推荐/)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/FreshPlate|健康菜谱|今日推荐/).first()).toBeVisible({ timeout: 5000 });
   });
 });
