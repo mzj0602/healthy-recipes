@@ -7,6 +7,7 @@
 ## 执行步骤
 
 ### 第一步：读取任务列表
+
 读取 `specs/{feature-name}/` 下文件名字典序最后一个 `tasks.md`，找到所有 `- [ ]` 未完成的任务。
 
 **只执行 `[types]`、`[worker]`、`[frontend]` 标注的任务，跳过所有 `[test-spec]` 任务**（测试由 P6 独立实现）。
@@ -14,6 +15,10 @@
 同时读取：
 - `.claude/CODING_GUIDELINES.md` — 编码规范
 - `specs/{feature-name}/` 文件名字典序最后一个 `design.md` — 设计参考
+
+**Stitch 导出检查**：检查 `specs/{feature-name}/ui/` 目录是否存在。
+- 若存在 → 读取其中所有 HTML 文件，作为 `[frontend]` 任务的权威 UI 参考（优先级高于 design.md 的文字描述）
+- 实现每个前端组件时，必须对照 HTML 的每个 DOM 区块，确保结构、文案、样式标记、装饰元素一一落地，不得遗漏
 
 ### 第二步：按模块循环执行（生成 → 验证 → 生成）
 

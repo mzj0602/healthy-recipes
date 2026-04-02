@@ -7,7 +7,15 @@
 ## 执行步骤
 
 ### 第一步：读取设计文档
+
 读取 `specs/{feature-name}/` 下文件名字典序最后一个 `design.md`。
+
+**Stitch 导出检查**：如果 `specs/{feature-name}/ui/` 目录存在，读取其中所有 HTML 文件。这些文件是前端任务的权威 UI 参考，优先级高于 design.md 的文字描述。从 HTML 中提取：
+- 页面整体结构（header / main / footer 层级）
+- 每个区块的关键元素（文案、图片、按钮、链接）
+- 关键样式标记（颜色值、圆角类名、间距、字体族）
+
+提取结果将在第三步生成前端任务时逐条落地。
 
 ### 第二步：拆解任务
 按以下原则拆解：
@@ -38,6 +46,13 @@
 ## 前端任务
 - [ ] T04 [frontend] 在 `src/features/{feature}/store/` 新增 {atomName} atom
 - [ ] T05 [frontend] 创建组件 `src/features/{feature}/components/{Component}.tsx`
+  <!-- 如有 Stitch HTML：逐一列出该组件需实现的 UI 区块，例如：-->
+  <!-- - 固定顶栏（brand + 返回首页 + Sign Up） -->
+  <!-- - 卡片 header（FreshPlate 品牌字、标题、副标题） -->
+  <!-- - 表单（uppercase label、圆角 input、gradient 按钮） -->
+  <!-- - 社交登录分隔线 + Google/微信按钮 -->
+  <!-- - 注册链接 -->
+  <!-- - Footer（brand + nav + copyright） -->
 - [ ] T06 [frontend] 在 `src/features/{feature}/components/{Page}.tsx` 集成新组件
 - [ ] T07 [frontend] 更新 `src/app/App.tsx` 添加新页面状态（如需要）
 

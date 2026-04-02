@@ -16,7 +16,25 @@
 读取 `specs/{feature-name}/` 下文件名字典序最后一个 `tasks.md`，获取所有 `[x]` 任务涉及的文件范围。
 读取 `.claude/SECURITY.md` 了解安全必检项。
 
-### 第二步：初始化 Review 日志
+### 第二步：Stitch UI 结构审查（如有 Stitch 导出）
+
+检查 `specs/{feature-name}/ui/` 是否存在：
+- **不存在** → 跳过此步，进入第三步
+- **存在** → 读取所有 HTML 文件，再读取对应的已实现组件文件，逐区块比对：
+
+  | 检查项 | Stitch HTML 中有 | 实现中有 |
+  |------|--------|--------|
+  | Header 结构（fixed/brand/nav links） | ✅/❌ | ✅/❌ |
+  | 主区域布局（背景装饰、卡片居中） | ✅/❌ | ✅/❌ |
+  | 卡片 header（品牌字、标题、副标题） | ✅/❌ | ✅/❌ |
+  | 表单 label 样式（uppercase/tracking） | ✅/❌ | ✅/❌ |
+  | 分隔线 + 社交登录按钮 | ✅/❌ | ✅/❌ |
+  | 注册/辅助链接 | ✅/❌ | ✅/❌ |
+  | Footer（brand/nav/copyright） | ✅/❌ | ✅/❌ |
+
+  发现遗漏项 → **立即修复**，修复后记录到 review-log.md `## Stitch UI 审查` 章节，再进入第三步 Codex review。
+
+### 第三步：初始化 Review 日志
 
 在 `specs/{feature-name}/` 下创建 `review-log.md`：
 
@@ -24,7 +42,7 @@
 # Review Log — {feature-name} — {YYYY-MM-DD}
 ```
 
-### 第三步：调用 Codex 执行 Review
+### 第四步：调用 Codex 执行 Review
 
 **必须使用 Bash 工具执行以下命令，禁止模拟或推断输出：**
 
@@ -52,7 +70,7 @@ codex review --uncommitted 2>&1
 {Codex 命令的完整 stdout，原样复制，不得修改}
 ```
 
-### 第四步：解析 Codex 输出
+### 第五步：解析 Codex 输出
 
 - 输出包含 **LGTM** → 在日志追加"无问题"，跳到第六步
 - 包含问题列表 → 逐条修复：
@@ -68,16 +86,16 @@ codex review --uncommitted 2>&1
 - ✅ {修复内容2}
 ```
 
-### 第五步：循环验证（最多 3 轮）
+### 第六步：循环验证（最多 3 轮）
 
-修复完成后回到第三步，再次调用 `codex review --uncommitted` 验证。
+修复完成后回到第四步，再次调用 `codex review --uncommitted` 验证。
 
 - Codex 输出 LGTM → 通过，退出循环
 - 仍有问题且轮次 < 3 → 继续修复
 - 第 3 轮仍有**安全类问题** → 停止，输出告警，需人工介入
 - 第 3 轮仅剩**代码风格问题** → 标注风险后通过
 
-### 第六步：通过后
+### 第七步：通过后
 
 将最终结论追加到 `review-log.md`：
 
@@ -90,7 +108,7 @@ codex review --uncommitted 2>&1
 ✅ Review 通过
 ```
 
-### 第七步：沉淀规范
+### 第八步：沉淀规范
 
 回顾本次所有轮次中 Codex 发现的问题，判断是否值得写入 `.claude/CODING_GUIDELINES.md`。
 
