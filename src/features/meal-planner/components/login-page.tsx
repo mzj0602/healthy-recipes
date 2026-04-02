@@ -51,7 +51,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf9f3', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* Fixed Header */}
-      <header className="bg-[#fdf9f3] backdrop-blur-xl fixed top-0 w-full z-50">
+      <header className="backdrop-blur-xl fixed top-0 w-full z-50" style={{ backgroundColor: '#fdf9f3' }}>
         <nav className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
           <div
             className="text-2xl font-bold tracking-tight"

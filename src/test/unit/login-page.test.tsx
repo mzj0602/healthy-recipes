@@ -19,7 +19,7 @@ describe('LoginPage', () => {
 
     render(<LoginPage onLogin={onLogin} />);
 
-    fireEvent.change(screen.getByLabelText('用户名'), { target: { value: 'wrong' } });
+    fireEvent.change(screen.getByLabelText('邮箱或用户名'), { target: { value: 'wrong' } });
     fireEvent.change(screen.getByLabelText('密码'), { target: { value: 'badpass' } });
     fireEvent.click(screen.getByRole('button', { name: '登录' }));
 
@@ -34,7 +34,7 @@ describe('LoginPage', () => {
 
     render(<LoginPage onLogin={onLogin} />);
 
-    fireEvent.change(screen.getByLabelText('用户名'), { target: { value: 'demo' } });
+    fireEvent.change(screen.getByLabelText('邮箱或用户名'), { target: { value: 'demo' } });
     fireEvent.change(screen.getByLabelText('密码'), { target: { value: '123456' } });
     fireEvent.click(screen.getByRole('button', { name: '登录' }));
 
@@ -49,8 +49,8 @@ describe('LoginPage', () => {
     // username textbox + password input (queried by role)
     const textboxes = screen.getAllByRole('textbox');
     expect(textboxes).toHaveLength(1); // only username is role=textbox; password is type=password
-    expect(screen.getByPlaceholderText('请输入用户名')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('请输入密码')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('example@freshplate.com')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument();
   });
 
   it('渲染 shadcn Button — 登录按钮文字正确', () => {
@@ -63,7 +63,7 @@ describe('LoginPage', () => {
     const onLogin = vi.fn();
     render(<LoginPage onLogin={onLogin} />);
 
-    fireEvent.change(screen.getByLabelText('用户名'), { target: { value: 'demo' } });
+    fireEvent.change(screen.getByLabelText('邮箱或用户名'), { target: { value: 'demo' } });
     fireEvent.change(screen.getByLabelText('密码'), { target: { value: '123456' } });
     fireEvent.click(screen.getByRole('button', { name: '登录' }));
 
