@@ -9,7 +9,7 @@ test.describe('login-ui-sync', () => {
   });
 
   test('登录页正常渲染', async ({ page }) => {
-    await expect(page.getByText('账号登录')).toBeVisible();
+    await expect(page.getByText('欢迎回来')).toBeVisible();
     await expect(page.getByText(/演示账号/)).toBeVisible();
   });
 
@@ -19,15 +19,15 @@ test.describe('login-ui-sync', () => {
   });
 
   test('错误凭证提示', async ({ page }) => {
-    await page.getByPlaceholder('请输入用户名').fill('wrong');
-    await page.getByPlaceholder('请输入密码').fill('wrong');
+    await page.getByPlaceholder('example@freshplate.com').fill('wrong');
+    await page.getByPlaceholder('••••••••').fill('wrong');
     await page.getByRole('button', { name: '登录' }).click();
     await expect(page.getByText('用户名或密码错误')).toBeVisible();
   });
 
   test('正确登录进入主应用', async ({ page }) => {
-    await page.getByPlaceholder('请输入用户名').fill('demo');
-    await page.getByPlaceholder('请输入密码').fill('123456');
+    await page.getByPlaceholder('example@freshplate.com').fill('demo');
+    await page.getByPlaceholder('••••••••').fill('123456');
     await page.getByRole('button', { name: '登录' }).click();
     await expect(page.getByText(/FreshPlate|健康菜谱|今日推荐/)).toBeVisible({ timeout: 5000 });
   });
