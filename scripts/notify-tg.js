@@ -43,8 +43,20 @@ const chatId = process.env.TG_CHAT_ID
 
 if (!token || !chatId || !text) process.exit(0)
 
-fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
-}).catch(() => {})
+try {
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
+  })
+  const data = await res.json()
+  if (data.ok) {
+    console.log(`TG notification sent (message_id: ${data.result.message_id})`)
+  } else {
+    console.error(`TG error: ${data.description}`)
+    process.exit(1)
+  }
+} catch (err) {
+  console.error(`TG fetch failed: ${err.message}`)
+  process.exit(1)
+}
