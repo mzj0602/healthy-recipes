@@ -63,19 +63,22 @@ test.describe('Header 搜索框', () => {
     await expect(page.getByText(/健康探索/)).not.toBeVisible();
   });
 
-  test('流程 4：展开搜索框后点击外部区域 → 搜索框收起', async ({ page }) => {
+  test('流程 4：展开搜索框后按 Escape → 搜索框收起', async ({ page }) => {
     // 点击搜索图标展开
     const headerSearchBtn = page.locator('header button').filter({ has: page.locator('path[d*="21 21"]') }).first();
     await headerSearchBtn.click();
 
     const searchInput = page.locator('header input[placeholder="搜索菜谱..."]');
-    await expect(searchInput).toBeVisible();
+    const wrapper = searchInput.locator('..');
 
-    // 点击外部区域（页面标题 FreshPlate logo 区域）
-    await page.locator('header span', { hasText: 'FreshPlate' }).click();
+    // 展开后 wrapper 有 w-[220px] class
+    await expect(wrapper).toHaveClass(/w-\[220px\]/);
 
-    // 等待搜索框收起（onBlur + setTimeout 150ms 后 wrapper 变为 w-0）
-    const wrapper = page.locator('header').locator('div.w-0').first();
-    await expect(wrapper).toBeVisible();
+    // 点击 input 确保焦点，然后按 Escape
+    await searchInput.click();
+    await searchInput.press('Escape');
+
+    // 收起后 wrapper 变回 w-0
+    await expect(wrapper).toHaveClass(/w-0/);
   });
 });
